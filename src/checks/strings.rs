@@ -42,7 +42,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
             }
 
             let col = raw.find('"').unwrap_or(0) + 1;
-            issues.push(Issue::warning(
+            issues.push(Issue::error(
                 ctx.path, lineno, col, RULE,
                 format!(
                     "hardcoded string '{}' in component \u{2014} expose as an `in property <string> {}` so callers can configure it",

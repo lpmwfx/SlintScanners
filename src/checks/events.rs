@@ -123,7 +123,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
         } else if all_props.len() == 1 {
             let has_bridge = meaningful.iter().any(|(_, l)| BRIDGE_CALL.is_match(l));
             if has_bridge {
-                issues.push(Issue::warning(
+                issues.push(Issue::error(
                     ctx.path, first_assign_ln, 1,
                     &format!("{}/no-state-mutation-in-callback", RULE_BASE),
                     format!(
@@ -136,7 +136,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
 
         // 3. Too long
         if meaningful.len() > 3 && if_lines.is_empty() && all_props.len() < 2 {
-            issues.push(Issue::warning(
+            issues.push(Issue::error(
                 ctx.path, cb.start_line, 1,
                 &format!("{}/no-callback-logic", RULE_BASE),
                 format!(

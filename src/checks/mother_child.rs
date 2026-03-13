@@ -56,7 +56,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
                 if STD_IMPORT.is_match(import_path) { continue; }
                 if import_path.starts_with("../") || import_path.starts_with("./") { continue; }
 
-                issues.push(Issue::warning(
+                issues.push(Issue::error(
                     ctx.path, lineno, cap.get(1).unwrap().start() + 1,
                     &format!("{}/sibling-import", RULE_BASE),
                     format!(

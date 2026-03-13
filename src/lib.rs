@@ -12,7 +12,7 @@ mod issue;
 mod context;
 
 pub use config::Config;
-pub use issue::{Issue, Severity};
+pub use issue::Issue;
 
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
@@ -71,9 +71,7 @@ pub fn scan_project() -> usize {
         let issues = scan_file(path, &cfg);
         for issue in &issues {
             println!("cargo:warning={}", issue);
-            if issue.severity == Severity::Error {
-                total_errors += 1;
-            }
+            total_errors += 1;
         }
     }
 
@@ -82,9 +80,7 @@ pub fn scan_project() -> usize {
         let issues = checks::architecture::check_tree(&slint_files);
         for issue in &issues {
             println!("cargo:warning={}", issue);
-            if issue.severity == Severity::Error {
-                total_errors += 1;
-            }
+            total_errors += 1;
         }
     }
 

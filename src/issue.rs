@@ -3,7 +3,6 @@ use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Severity {
-    Warning,
     Error,
 }
 
@@ -28,32 +27,16 @@ impl Issue {
             message,
         }
     }
-
-    pub fn warning(file: &Path, line: usize, col: usize, rule: &str, message: String) -> Self {
-        Self {
-            file: file.to_path_buf(),
-            line,
-            col,
-            severity: Severity::Warning,
-            rule: rule.to_string(),
-            message,
-        }
-    }
 }
 
 impl fmt::Display for Issue {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let sev = match self.severity {
-            Severity::Error => "error",
-            Severity::Warning => "warning",
-        };
         write!(
             f,
-            "{}:{}:{}: {} {}: {}",
+            "{}:{}:{}: error {}: {}",
             self.file.display(),
             self.line,
             self.col,
-            sev,
             self.rule,
             self.message
         )
