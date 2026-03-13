@@ -38,10 +38,15 @@ static DURATION_VALUE: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"\b\d+(?:\.\d+)?\s*(?:ms|s)\b").unwrap()
 );
 static FLOAT_VALUE: LazyLock<Regex> = LazyLock::new(||
-    Regex::new(r"(?<![#\w])\b\d+\.\d+\b(?!\s*(?:px|%|ms|s)\b)").unwrap()
+    Regex::new(r"\b(\d+\.\d+)\b").unwrap()
 );
 static INT_VALUE: LazyLock<Regex> = LazyLock::new(||
-    Regex::new(r"(?<![#\w.\-])\b(\d+)\b(?!\s*(?:px|%|ms|s)\b)(?![.\w])").unwrap()
+    Regex::new(r"\b(\d+)\b").unwrap()
+);
+// Units that claim numbers — if a number is followed by a unit it's already
+// caught by the px/percent/duration checks.
+static UNIT_SUFFIX: LazyLock<Regex> = LazyLock::new(||
+    Regex::new(r"^\s*(?:px|%|ms|s)\b").unwrap()
 );
 
 // Syntax exceptions
@@ -126,20 +131,58 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
             ));
         }
 
-        // Floats
-        for m in FLOAT_VALUE.find_iter(segment) {
+        // Collect positions already covered by px/percent/duration checks
+        let mut covered: Vec<(usize, usize)> = Vec::new();
+        for m in PIXEL_VALUE.find_iter(segment) { covered.push((m.start(), m.end())); }
+        for m in PERCENT_VALUE.find_iter(segment) { covered.push((m.start(), m.end())); }
+        for m in DURATION_VALUE.find_iter(segment) { covered.push((m.start(), m.end())); }
+        for m in HEX_COLOR.find_iter(segment) { covered.push((m.start(), m.end())); }
+
+        let is_covered = |start: usize, end: usize| -> bool {
+            covered.iter().any(|&(cs, ce)| start >= cs && end <= ce)
+        };
+
+        // Floats (not already caught by px/duration/percent)
+        for cap in FLOAT_VALUE.captures_iter(segment) {
+            let m = cap.get(1).unwrap();
+            if is_covered(m.start(), m.end()) { continue; }
             if is_property_decl(raw, m.start()) { continue; }
+            // Skip if preceded by # (hex)
+            if m.start() > 0 && segment.as_bytes()[m.start() - 1] == b'#' { continue; }
+            // Skip if followed by unit
+            if UNIT_SUFFIX.is_match(&segment[m.end()..]) { continue; }
             issues.push(Issue::error(
                 ctx.path, lineno, m.start() + 1, RULE_NUMBER,
                 format!("hardcoded float '{}' \u{2014} use state variable or theme token", m.as_str()),
             ));
         }
 
-        // Integers
+        // Integers (not already caught by other checks)
         for cap in INT_VALUE.captures_iter(segment) {
             let m = cap.get(1).unwrap();
+            if is_covered(m.start(), m.end()) { continue; }
             if is_property_decl(raw, m.start()) { continue; }
             if GRID_ROW_COL.is_match(raw) { continue; }
+            // Skip if preceded by # (hex) or . (field) or letter/underscore (identifier)
+            if m.start() > 0 {
+                let prev = segment.as_bytes()[m.start() - 1];
+                if prev == b'#' || prev == b'.' || prev == b'_'
+                    || prev.is_ascii_alphabetic()
+                {
+                    continue;
+                }
+            }
+            // Skip if followed by . (decimal) or letter (identifier suffix) or unit
+            if m.end() < segment.len() {
+                let rest = &segment[m.end()..];
+                if rest.starts_with('.') || rest.as_bytes()[0].is_ascii_alphabetic()
+                    || rest.as_bytes()[0] == b'_'
+                {
+                    continue;
+                }
+            }
+            // Skip if followed by unit
+            if UNIT_SUFFIX.is_match(&segment[m.end()..]) { continue; }
             issues.push(Issue::error(
                 ctx.path, lineno, m.start() + 1, RULE_NUMBER,
                 format!("hardcoded integer '{}' \u{2014} use state variable (ViewStates.*, Sizes.*)", m.as_str()),

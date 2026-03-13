@@ -20,7 +20,7 @@ static IF_STMT: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"\bif\b").unwrap()
 );
 static ROOT_ASSIGN: LazyLock<Regex> = LazyLock::new(||
-    Regex::new(r"\broot\.([\w-]+)\s*=(?!=)").unwrap()
+    Regex::new(r"\broot\.([\w-]+)\s*=[^=]").unwrap()
 );
 static BRIDGE_CALL: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"\w+\.\w+\s*\(").unwrap()
