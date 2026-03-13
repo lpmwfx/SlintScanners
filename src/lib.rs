@@ -14,17 +14,39 @@ mod context;
 pub use config::Config;
 pub use issue::{Issue, Severity};
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
+
+/// Walk up from `start` to find a Cargo.toml containing `[workspace]`.
+/// Returns the workspace root if found, otherwise the original `start`.
+fn find_workspace_root(start: &Path) -> PathBuf {
+    let mut dir = start.to_path_buf();
+    loop {
+        let cargo = dir.join("Cargo.toml");
+        if cargo.is_file() {
+            if let Ok(content) = std::fs::read_to_string(&cargo) {
+                if content.contains("[workspace]") {
+                    return dir;
+                }
+            }
+        }
+        if !dir.pop() {
+            break;
+        }
+    }
+    start.to_path_buf()
+}
 
 /// Scan all `.slint` files and emit `cargo:warning` for each violation.
 /// Call this from `build.rs`.
 ///
 /// Returns the total number of errors found.
 pub fn scan_project() -> usize {
-    let root = std::env::var("CARGO_MANIFEST_DIR")
-        .map(std::path::PathBuf::from)
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
+        .map(PathBuf::from)
         .unwrap_or_else(|_| std::env::current_dir().expect("no cwd"));
+
+    let root = find_workspace_root(&manifest_dir);
 
     let cfg = Config::load(&root);
     if !cfg.enabled {
