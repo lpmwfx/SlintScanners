@@ -1,0 +1,16 @@
+[package]
+name = "slintscanners"
+version = "0.1.0"
+edition = "2021"
+description = "Zero-literal Slint scanners for cargo build — enforces tokens, themes, states from lpmwfx/Rules"
+license = "MIT"
+repository = "https://github.com/lpmwfx/SlintScanners"
+readme = "README.md"
+keywords = ["slint", "lint", "static-analysis", "build-script", "zero-literal"]
+categories = ["development-tools", "development-tools::build-utils"]
+
+[dependencies]
+regex = "1"
+toml = "0.8"
+serde = { version = "1", features = ["derive"] }
+walkdir = "2"
