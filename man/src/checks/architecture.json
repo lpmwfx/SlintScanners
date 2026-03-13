@@ -1,0 +1,12 @@
+{
+  "source": "src/checks/architecture.rs",
+  "items": [
+    {
+      "name": "check_tree",
+      "kind": "fn",
+      "signature": "pub fn check_tree(paths: &[PathBuf]) -> Vec<Issue>",
+      "line": 72,
+      "doc": "Scan the entire project tree for callbacks delegating to multiple gateways — emit issues if 2+ different gateway objects are used."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "source": "src/issue.rs",
+  "items": [
+    {
+      "name": "Severity",
+      "kind": "enum",
+      "signature": "pub enum Severity",
+      "line": 6,
+      "doc": "Severity level of a scanner issue — currently only Error is used."
+    },
+    {
+      "name": "Issue",
+      "kind": "struct",
+      "signature": "pub struct Issue",
+      "line": 12,
+      "doc": "A single violation found by the scanner — file, line, column, rule ID, and message."
+    },
+    {
+      "name": "error",
+      "kind": "fn",
+      "signature": "pub fn error(file: &Path, line: usize, col: usize, rule: &str, message: String) -> Self",
+      "line": 23,
+      "doc": "Create an Error-severity issue at the given file location with rule ID and message."
+    }
+  ]
+}

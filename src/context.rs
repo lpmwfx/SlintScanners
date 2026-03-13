@@ -13,6 +13,7 @@ pub struct FileContext<'a> {
 const DEFINITION_FOLDERS: &[&str] = &["globals", "tokens", "theme", "state"];
 
 impl<'a> FileContext<'a> {
+    /// Create a new FileContext for a .slint file being scanned, detecting its role and folder.
     pub fn new(path: &'a Path, lines: &[&str]) -> Self {
         Self {
             path,

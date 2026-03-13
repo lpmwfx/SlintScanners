@@ -1,0 +1,49 @@
+# Documentation Issues — SlintScanners
+
+21 items need /// doc comments
+
+## src/checks/architecture.rs
+- line 71: `check_tree` (fn)
+
+## src/checks/events.rs
+- line 76: `check` (fn)
+
+## src/checks/mod.rs
+- line 1: `tokens` (mod)
+- line 2: `strings` (mod)
+- line 3: `structure` (mod)
+- line 4: `events` (mod)
+- line 5: `mother_child` (mod)
+- line 6: `string_states` (mod)
+- line 7: `architecture` (mod)
+
+## src/checks/mother_child.rs
+- line 28: `check` (fn)
+
+## src/checks/strings.rs
+- line 26: `check` (fn)
+
+## src/checks/string_states.rs
+- line 23: `check` (fn)
+
+## src/checks/structure.rs
+- line 18: `check` (fn)
+
+## src/checks/tokens.rs
+- line 70: `check` (fn)
+
+## src/config.rs
+- line 5: `Config` (struct)
+- line 53: `load` (fn)
+
+## src/context.rs
+- line 16: `new` (fn)
+
+## src/issue.rs
+- line 5: `Severity` (enum)
+- line 10: `Issue` (struct)
+- line 20: `error` (fn)
+
+## src/lib.rs
+- line 9: `checks` (mod)
+

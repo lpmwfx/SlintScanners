@@ -1,0 +1,54 @@
+{
+  "source": "src/checks/mod.rs",
+  "items": [
+    {
+      "name": "tokens",
+      "kind": "mod",
+      "signature": "pub mod tokens;",
+      "line": 2,
+      "doc": "Detect forbidden token names — slint/naming.md"
+    },
+    {
+      "name": "strings",
+      "kind": "mod",
+      "signature": "pub mod strings;",
+      "line": 4,
+      "doc": "Detect string literals in state fields — slint/globals.md"
+    },
+    {
+      "name": "structure",
+      "kind": "mod",
+      "signature": "pub mod structure;",
+      "line": 6,
+      "doc": "Detect invalid component structure — slint/structure.md"
+    },
+    {
+      "name": "events",
+      "kind": "mod",
+      "signature": "pub mod events;",
+      "line": 8,
+      "doc": "Detect invalid event/callback usage — slint/events.md"
+    },
+    {
+      "name": "mother_child",
+      "kind": "mod",
+      "signature": "pub mod mother_child;",
+      "line": 10,
+      "doc": "Detect invalid parent-child component relationships — slint/mother-child.md"
+    },
+    {
+      "name": "string_states",
+      "kind": "mod",
+      "signature": "pub mod string_states;",
+      "line": 12,
+      "doc": "Detect string literal state comparisons — slint/types.md"
+    },
+    {
+      "name": "architecture",
+      "kind": "mod",
+      "signature": "pub mod architecture;",
+      "line": 14,
+      "doc": "Detect invalid architecture layer assignments — slint/topology.md"
+    }
+  ]
+}

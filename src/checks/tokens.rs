@@ -67,6 +67,7 @@ fn is_property_decl(line: &str, match_start: usize) -> bool {
     PROPERTY_DECL.is_match(&line[..match_start])
 }
 
+/// Scan for hardcoded zero-literals — detect colors, sizes, durations, and plain numbers in component definitions.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     if ctx.is_definition_file {
         return;

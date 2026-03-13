@@ -1,0 +1,26 @@
+{
+  "source": "src/lib.rs",
+  "items": [
+    {
+      "name": "checks",
+      "kind": "mod",
+      "signature": "pub mod checks;",
+      "line": 10,
+      "doc": "Collection of SlintScanners static analysis checks — tokens, strings, structure, events, mother-child, and architecture."
+    },
+    {
+      "name": "scan_project",
+      "kind": "fn",
+      "signature": "pub fn scan_project() -> usize",
+      "line": 45,
+      "doc": "Scan all `.slint` files and emit `cargo:warning` for each violation.\nCall this from `build.rs`.\n\nReturns the total number of errors found."
+    },
+    {
+      "name": "scan_file",
+      "kind": "fn",
+      "signature": "pub fn scan_file(path: &Path, cfg: &Config) -> Vec<Issue>",
+      "line": 99,
+      "doc": "Scan a single `.slint` file and return all issues."
+    }
+  ]
+}

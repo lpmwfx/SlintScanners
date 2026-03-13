@@ -1,0 +1,255 @@
+{
+  "generated": "2026-03-13T22:02:04.946193900+01:00",
+  "project": "project",
+  "files": [
+    {
+      "source": "src/checks/architecture.rs",
+      "man_path": "man/src/checks/architecture.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/events.rs",
+      "man_path": "man/src/checks/events.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/mod.rs",
+      "man_path": "man/src/checks/mod.json",
+      "item_count": 7,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/mother_child.rs",
+      "man_path": "man/src/checks/mother_child.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/strings.rs",
+      "man_path": "man/src/checks/strings.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/string_states.rs",
+      "man_path": "man/src/checks/string_states.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/structure.rs",
+      "man_path": "man/src/checks/structure.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/checks/tokens.rs",
+      "man_path": "man/src/checks/tokens.json",
+      "item_count": 1,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/config.rs",
+      "man_path": "man/src/config.json",
+      "item_count": 2,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/context.rs",
+      "man_path": "man/src/context.json",
+      "item_count": 3,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/issue.rs",
+      "man_path": "man/src/issue.json",
+      "item_count": 3,
+      "undoc_count": 0
+    },
+    {
+      "source": "src/lib.rs",
+      "man_path": "man/src/lib.json",
+      "item_count": 3,
+      "undoc_count": 0
+    }
+  ],
+  "all_items": [
+    {
+      "name": "check_tree",
+      "kind": "fn",
+      "source": "src/checks/architecture.rs",
+      "line": 72,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/events.rs",
+      "line": 77,
+      "documented": true
+    },
+    {
+      "name": "tokens",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 2,
+      "documented": true
+    },
+    {
+      "name": "strings",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 4,
+      "documented": true
+    },
+    {
+      "name": "structure",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 6,
+      "documented": true
+    },
+    {
+      "name": "events",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 8,
+      "documented": true
+    },
+    {
+      "name": "mother_child",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 10,
+      "documented": true
+    },
+    {
+      "name": "string_states",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 12,
+      "documented": true
+    },
+    {
+      "name": "architecture",
+      "kind": "mod",
+      "source": "src/checks/mod.rs",
+      "line": 14,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/mother_child.rs",
+      "line": 29,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/strings.rs",
+      "line": 27,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/string_states.rs",
+      "line": 24,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/structure.rs",
+      "line": 19,
+      "documented": true
+    },
+    {
+      "name": "check",
+      "kind": "fn",
+      "source": "src/checks/tokens.rs",
+      "line": 71,
+      "documented": true
+    },
+    {
+      "name": "Config",
+      "kind": "struct",
+      "source": "src/config.rs",
+      "line": 6,
+      "documented": true
+    },
+    {
+      "name": "load",
+      "kind": "fn",
+      "source": "src/config.rs",
+      "line": 55,
+      "documented": true
+    },
+    {
+      "name": "FileContext",
+      "kind": "struct",
+      "source": "src/context.rs",
+      "line": 4,
+      "documented": true
+    },
+    {
+      "name": "new",
+      "kind": "fn",
+      "source": "src/context.rs",
+      "line": 17,
+      "documented": true
+    },
+    {
+      "name": "comment_start",
+      "kind": "fn",
+      "source": "src/context.rs",
+      "line": 50,
+      "documented": true
+    },
+    {
+      "name": "Severity",
+      "kind": "enum",
+      "source": "src/issue.rs",
+      "line": 6,
+      "documented": true
+    },
+    {
+      "name": "Issue",
+      "kind": "struct",
+      "source": "src/issue.rs",
+      "line": 12,
+      "documented": true
+    },
+    {
+      "name": "error",
+      "kind": "fn",
+      "source": "src/issue.rs",
+      "line": 23,
+      "documented": true
+    },
+    {
+      "name": "checks",
+      "kind": "mod",
+      "source": "src/lib.rs",
+      "line": 10,
+      "documented": true
+    },
+    {
+      "name": "scan_project",
+      "kind": "fn",
+      "source": "src/lib.rs",
+      "line": 45,
+      "documented": true
+    },
+    {
+      "name": "scan_file",
+      "kind": "fn",
+      "source": "src/lib.rs",
+      "line": 99,
+      "documented": true
+    }
+  ]
+}

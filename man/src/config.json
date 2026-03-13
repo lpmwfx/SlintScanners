@@ -1,0 +1,19 @@
+{
+  "source": "src/config.rs",
+  "items": [
+    {
+      "name": "Config",
+      "kind": "struct",
+      "signature": "pub struct Config",
+      "line": 6,
+      "doc": "Scanner configuration — controls which checks are enabled and whether violations block the build."
+    },
+    {
+      "name": "load",
+      "kind": "fn",
+      "signature": "pub fn load(project_root: &Path) -> Self",
+      "line": 55,
+      "doc": "Load configuration from `proj/rulestools.toml` under `[slintscanners]` section, or return defaults if not found."
+    }
+  ]
+}

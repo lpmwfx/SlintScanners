@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use std::path::Path;
 
+/// Scanner configuration — controls which checks are enabled and whether violations block the build.
 #[derive(Debug, Clone)]
 pub struct Config {
     pub enabled: bool,
@@ -50,6 +51,7 @@ struct TomlScanners {
 }
 
 impl Config {
+    /// Load configuration from `proj/rulestools.toml` under `[slintscanners]` section, or return defaults if not found.
     pub fn load(project_root: &Path) -> Self {
         let toml_path = project_root.join("proj").join("rulestools.toml");
         let mut cfg = Self::default();

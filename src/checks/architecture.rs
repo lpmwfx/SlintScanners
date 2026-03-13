@@ -68,6 +68,7 @@ fn collect_bridge_calls(path: &Path) -> Vec<(usize, String)> {
     results
 }
 
+/// Scan the entire project tree for callbacks delegating to multiple gateways — emit issues if 2+ different gateway objects are used.
 pub fn check_tree(paths: &[PathBuf]) -> Vec<Issue> {
     let mut all_receivers: HashMap<String, Vec<(PathBuf, usize)>> = HashMap::new();
 

@@ -1,0 +1,12 @@
+{
+  "source": "src/checks/structure.rs",
+  "items": [
+    {
+      "name": "check",
+      "kind": "fn",
+      "signature": "pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>)",
+      "line": 19,
+      "doc": "Scan for multiple component definitions in a single file — emit issues for files with 2+ components."
+    }
+  ]
+}

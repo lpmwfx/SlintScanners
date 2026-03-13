@@ -1,0 +1,26 @@
+{
+  "source": "src/context.rs",
+  "items": [
+    {
+      "name": "FileContext",
+      "kind": "struct",
+      "signature": "pub struct FileContext<'a>",
+      "line": 4,
+      "doc": "Shared context for a .slint file being scanned."
+    },
+    {
+      "name": "new",
+      "kind": "fn",
+      "signature": "pub fn new(path: &'a Path, lines: &[&str]) -> Self",
+      "line": 17,
+      "doc": "Create a new FileContext for a .slint file being scanned, detecting its role and folder."
+    },
+    {
+      "name": "comment_start",
+      "kind": "fn",
+      "signature": "pub fn comment_start(line: &str) -> usize",
+      "line": 50,
+      "doc": "Find comment start position on a line."
+    }
+  ]
+}

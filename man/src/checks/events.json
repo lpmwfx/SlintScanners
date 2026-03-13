@@ -1,0 +1,12 @@
+{
+  "source": "src/checks/events.rs",
+  "items": [
+    {
+      "name": "check",
+      "kind": "fn",
+      "signature": "pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>)",
+      "line": 77,
+      "doc": "Scan for callback body complexity — detect if-statements, multiple root assignments, and lengthy bodies."
+    }
+  ]
+}

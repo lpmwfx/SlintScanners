@@ -1,0 +1,12 @@
+{
+  "source": "src/checks/mother_child.rs",
+  "items": [
+    {
+      "name": "check",
+      "kind": "fn",
+      "signature": "pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>)",
+      "line": 29,
+      "doc": "Scan for mother-child architecture violations — detect state ownership in child components, improper in-out properties, and sibling imports."
+    }
+  ]
+}

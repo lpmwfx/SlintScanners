@@ -6,6 +6,7 @@
 //!
 //! Separate from RustScanners — only install this in Slint projects.
 
+/// Collection of SlintScanners static analysis checks — tokens, strings, structure, events, mother-child, and architecture.
 pub mod checks;
 mod config;
 mod issue;

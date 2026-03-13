@@ -15,6 +15,7 @@ static COMPONENT_DEF: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"(?m)^\s*(?:export\s+)?component\s+(\w+)").unwrap()
 );
 
+/// Scan for multiple component definitions in a single file — emit issues for files with 2+ components.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     let text = lines.join("\n");
     let matches: Vec<_> = COMPONENT_DEF.captures_iter(&text).collect();

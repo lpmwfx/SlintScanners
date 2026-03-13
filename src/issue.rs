@@ -1,11 +1,13 @@
 use std::fmt;
 use std::path::{Path, PathBuf};
 
+/// Severity level of a scanner issue — currently only Error is used.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Severity {
     Error,
 }
 
+/// A single violation found by the scanner — file, line, column, rule ID, and message.
 #[derive(Debug, Clone)]
 pub struct Issue {
     pub file: PathBuf,
@@ -17,6 +19,7 @@ pub struct Issue {
 }
 
 impl Issue {
+    /// Create an Error-severity issue at the given file location with rule ID and message.
     pub fn error(file: &Path, line: usize, col: usize, rule: &str, message: String) -> Self {
         Self {
             file: file.to_path_buf(),

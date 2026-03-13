@@ -25,6 +25,7 @@ static STD_IMPORT: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"^std-widgets\.slint$").unwrap()
 );
 
+/// Scan for mother-child architecture violations — detect state ownership in child components, improper in-out properties, and sibling imports.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     // Mother is allowed to own state
     if ctx.is_mother { return; }

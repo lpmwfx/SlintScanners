@@ -73,6 +73,7 @@ fn extract_callbacks(lines: &[&str]) -> Vec<Callback> {
     results
 }
 
+/// Scan for callback body complexity — detect if-statements, multiple root assignments, and lengthy bodies.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     for cb in extract_callbacks(lines) {
         let meaningful: Vec<_> = cb.body.iter()

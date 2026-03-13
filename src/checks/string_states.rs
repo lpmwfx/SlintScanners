@@ -20,6 +20,7 @@ static SKIP_VALUES: LazyLock<Regex> = LazyLock::new(||
     Regex::new(r"^(?:[A-Z]|.*\s.*|.*[/\\].*|.*\.slint|.*\.png|.*\.svg|v\d|\d)").unwrap()
 );
 
+/// Scan for string literal comparisons — detect == and != operators comparing string literals to identifiers.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     if ctx.is_definition_file { return; }
 

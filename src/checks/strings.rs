@@ -23,6 +23,7 @@ const ALLOWED_PROPS: &[&str] = &[
     "accessible-label", "icon", "source", "background-image",
 ];
 
+/// Scan for hardcoded string literals in property values — detect string assignments to text, title, and similar properties.
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     let _ = ctx; // no special context needed
 
