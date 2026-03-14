@@ -72,6 +72,9 @@ events = true       # callback logic, state mutations
 mother_child = true # in-out property in children, sibling imports
 string_states = true # stringly-typed state comparisons
 architecture = true # multiple gateway objects
+
+# Optional: exclude paths from scanning (glob patterns)
+exclude = ["target/*", "**/vendor/*"]
 ```
 
 Set `deny = true` to make violations fail the build.

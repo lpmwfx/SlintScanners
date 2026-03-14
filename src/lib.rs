@@ -17,6 +17,7 @@ pub use issue::Issue;
 
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
+use glob::Pattern;
 
 /// Walk up from `start` to find a Cargo.toml containing `[workspace]`.
 /// Returns the workspace root if found, otherwise the original `start`.
@@ -36,6 +37,18 @@ fn find_workspace_root(start: &Path) -> PathBuf {
         }
     }
     start.to_path_buf()
+}
+
+fn matches_exclude_pattern(path: &Path, patterns: &[String]) -> bool {
+    let path_str = path.to_string_lossy();
+    for pattern_str in patterns {
+        if let Ok(pattern) = Pattern::new(pattern_str) {
+            if pattern.matches(&path_str) {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 /// Scan all `.slint` files and emit `cargo:warning` for each violation.
@@ -61,6 +74,7 @@ pub fn scan_project() -> usize {
     let slint_files: Vec<_> = WalkDir::new(&scan_dir)
         .into_iter()
         .filter_map(|e| e.ok())
+        .filter(|e| !matches_exclude_pattern(e.path(), &cfg.exclude))
         .filter(|e| e.path().extension().map_or(false, |ext| ext == "slint"))
         .map(|e| e.path().to_path_buf())
         .collect();

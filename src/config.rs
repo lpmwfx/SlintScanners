@@ -13,6 +13,7 @@ pub struct Config {
     pub check_mother_child: bool,
     pub check_string_states: bool,
     pub check_architecture: bool,
+    pub exclude: Vec<String>,
 }
 
 impl Default for Config {
@@ -27,6 +28,7 @@ impl Default for Config {
             check_mother_child: true,
             check_string_states: true,
             check_architecture: true,
+            exclude: Vec::new(),
         }
     }
 }
@@ -48,6 +50,7 @@ struct TomlScanners {
     mother_child: Option<bool>,
     string_states: Option<bool>,
     architecture: Option<bool>,
+    exclude: Option<Vec<String>>,
 }
 
 impl Config {
@@ -68,6 +71,7 @@ impl Config {
                     if let Some(v) = s.mother_child { cfg.check_mother_child = v; }
                     if let Some(v) = s.string_states { cfg.check_string_states = v; }
                     if let Some(v) = s.architecture { cfg.check_architecture = v; }
+                    if let Some(v) = s.exclude { cfg.exclude = v; }
                 }
             }
         }
