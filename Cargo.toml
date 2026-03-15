@@ -9,6 +9,10 @@ readme = "README.md"
 keywords = ["slint", "lint", "static-analysis", "build-script", "zero-literal"]
 categories = ["development-tools", "development-tools::build-utils"]
 
+[[bin]]
+name = "slintscanners"
+path = "src/bin/scan.rs"
+
 [dependencies]
 regex = "1"
 toml = "0.8"

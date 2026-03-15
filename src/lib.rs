@@ -125,6 +125,34 @@ pub fn scan_project() -> usize {
     total_errors
 }
 
+/// Scan all `.slint` files at `root` and return all issues.
+///
+/// Unlike `scan_project()`, this does not use `CARGO_MANIFEST_DIR` —
+/// suitable for standalone CLI use.
+pub fn scan_at(root: &Path) -> Vec<Issue> {
+    let cfg = Config::load(root);
+    if !cfg.enabled {
+        return vec![];
+    }
+    let ui_dir = root.join("ui");
+    let scan_dir = if ui_dir.is_dir() { ui_dir } else { root.join("src") };
+    let slint_files: Vec<_> = WalkDir::new(&scan_dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| !matches_exclude_pattern(e.path(), &cfg.exclude))
+        .filter(|e| e.path().extension().map_or(false, |ext| ext == "slint"))
+        .map(|e| e.path().to_path_buf())
+        .collect();
+    let mut issues: Vec<Issue> = Vec::new();
+    for path in &slint_files {
+        issues.extend(scan_file(path, &cfg));
+    }
+    if cfg.check_architecture {
+        issues.extend(checks::architecture::check_tree(&slint_files));
+    }
+    issues
+}
+
 /// Scan a single `.slint` file and return all issues.
 pub fn scan_file(path: &Path, cfg: &Config) -> Vec<Issue> {
     let content = match std::fs::read_to_string(path) {
