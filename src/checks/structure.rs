@@ -20,7 +20,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     let text = lines.join("\n");
     let matches: Vec<_> = COMPONENT_DEF.captures_iter(&text).collect();
 
-    if matches.len() < 2 {
+    if matches.len() <= 1 {
         return;
     }
 
@@ -28,15 +28,18 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
 
     // Find line numbers for subsequent components
     for cap in &matches[1..] {
-        let m = cap.get(0).unwrap();
+        let Some(m) = cap.get(0) else { continue };
         let name = &cap[1];
         let line = text[..m.start()].matches('\n').count() + 1;
 
         issues.push(Issue::error(
             ctx.path, line, 1, RULE,
             format!(
-                "component '{}' \u{2014} multiple components in one file. Extract to '{}.slint' (primary: '{}')",
-                name, name, primary
+                "component '{}' — multiple components in one file (primary: '{}'). \
+                 Before extracting: (1) check widgets/ for an existing generic component, \
+                 (2) if generic (in property + callback only) → extract to widgets/{}.slint, \
+                 (3) if view-specific → extract to a new child file",
+                name, primary, name
             ),
         ));
     }

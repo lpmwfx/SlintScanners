@@ -41,8 +41,9 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
             issues.push(Issue::error(
                 ctx.path, lineno, 1,
                 &format!("{}/child-has-state", RULE_BASE),
-                "in-out property in child component \u{2014} children must be stateless. \
-                 Use 'in property' to receive state from mother, 'callback' to emit events up."
+                "in-out property in child — children and widgets must be stateless. \
+                 Is this component generic? → move to widgets/ first. \
+                 Use 'in property' to receive, 'callback' to emit events up."
                     .to_string(),
             ));
         }
@@ -57,12 +58,13 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
                 if STD_IMPORT.is_match(import_path) { continue; }
                 if import_path.starts_with("../") || import_path.starts_with("./") { continue; }
 
+                let col = cap.get(1).map_or(1, |g| g.start() + 1);
                 issues.push(Issue::error(
-                    ctx.path, lineno, cap.get(1).unwrap().start() + 1,
+                    ctx.path, lineno, col,
                     &format!("{}/sibling-import", RULE_BASE),
                     format!(
-                        "view imports sibling view '{}' \u{2014} views must not know about each other. \
-                         Route shared state through mother instead.",
+                        "view imports sibling view '{}' — views may only be imported by Mother. \
+                         Shared components belong in widgets/ — route shared state through Mother.",
                         import_path
                     ),
                 ));
