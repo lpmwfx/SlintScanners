@@ -1,0 +1,93 @@
+# SlintScanners — Installation
+
+slintscanners is a build-dependency, not a global tool.
+It runs automatically during `cargo build` via `build.rs`.
+
+---
+
+## Add to a Slint project
+
+### Cargo.toml
+
+```toml
+[build-dependencies]
+slintscanners = { git = "https://github.com/lpmwfx/SlintScanners" }
+```
+
+### build.rs
+
+```rust
+fn main() {
+    slintscanners::scan_project();
+}
+```
+
+That is all. The scanner runs on every `cargo build` and emits
+`cargo:warning=...` for each violation.
+
+---
+
+## Configuration (optional)
+
+Create `proj/rulestools.toml` in the project root to control which
+checks run and whether violations block the build:
+
+```toml
+[slintscanners]
+enabled       = true   # false = scanner disabled entirely
+deny          = false  # true = panic and block build on any error
+
+check_tokens       = true  # hardcoded colors, px, %, ms, numbers
+check_strings      = true  # string literals in state fields
+check_structure    = true  # one component per file
+check_events       = true  # invalid callback usage
+check_mother_child = true  # stateless child enforcement
+check_string_states = true # string literal state comparisons
+check_architecture = true  # single-gateway callback rule
+
+exclude = [
+    "**/generated/**",   # skip generated .slint files
+]
+```
+
+All checks are on by default. Set `deny = true` to make violations
+block the build (useful in CI).
+
+---
+
+## What is scanned
+
+`.slint` files under `ui/` (or `src/` if no `ui/` directory exists).
+Workspace roots are detected automatically.
+
+### Three-tier hierarchy enforced
+
+```
+Mother  (app-window.slint, inherits Window)
+├── imports Views    — stateless screens, only Mother imports these
+└── imports Widgets  — generic, reusable, importable by anyone
+
+Views   (ui/views/)
+├── in property + callback only — no in-out property
+└── may NOT import sibling views
+
+Widgets (ui/widgets/ or ui/components/)
+├── in property + callback only — no in-out property
+└── zero literals — tokens only (no hardcoded colors, px, ms, ...)
+```
+
+When a violation is found the error message tells you which tier the
+component belongs to and whether to extract it to `widgets/` or keep
+it as a view-specific child.
+
+---
+
+## Update
+
+To pull the latest version:
+
+```bash
+cargo update slintscanners
+```
+
+No version pinning — always tracks the latest commit on `main`.
