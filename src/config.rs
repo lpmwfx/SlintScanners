@@ -12,6 +12,8 @@ pub enum Topology {
 }
 
 const TOPOLOGY_WORKSPACE: &str = "workspace";
+const CONFIG_DIR: &str = "proj";
+const CONFIG_FILENAME: &str = "rulestools.toml";
 
 impl Topology {
     fn from_str(s: &str) -> Self {
@@ -81,9 +83,12 @@ struct TomlScanners {
 }
 
 impl Config {
-    /// Load configuration from `proj/rulestools.toml` under `[slintscanners]` section, or return defaults if not found.
-    pub fn load(project_root: &Path) -> Self {
-        let toml_path = project_root.join("proj").join("rulestools.toml");
+    /// Load configuration from `proj/rulestools.toml`.
+    /// Checks `manifest_dir` first (per-crate override), falls back to workspace `root`.
+    pub fn load(root: &Path, manifest_dir: &Path) -> Self {
+        let local = manifest_dir.join(CONFIG_DIR).join(CONFIG_FILENAME);
+        let fallback = root.join(CONFIG_DIR).join(CONFIG_FILENAME);
+        let toml_path = if local.is_file() { local } else { fallback };
         let mut cfg = Self::default();
 
         if let Ok(content) = std::fs::read_to_string(&toml_path) {

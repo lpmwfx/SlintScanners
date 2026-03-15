@@ -57,7 +57,7 @@ pub fn scan_project() -> usize {
 
     let root = walker::find_workspace_root(&manifest_dir);
 
-    let cfg = Config::load(&root);
+    let cfg = Config::load(&root, &manifest_dir);
     if !cfg.enabled {
         return 0;
     }
@@ -89,7 +89,7 @@ pub fn scan_project() -> usize {
 /// Unlike `scan_project()`, this does not use `CARGO_MANIFEST_DIR` —
 /// suitable for standalone CLI use.
 pub fn scan_at(root: &Path) -> Vec<Issue> {
-    let cfg = Config::load(root);
+    let cfg = Config::load(root, root);
     if !cfg.enabled {
         return vec![];
     }
