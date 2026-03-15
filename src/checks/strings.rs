@@ -6,7 +6,7 @@
 use regex::Regex;
 use std::sync::LazyLock;
 
-use crate::context::FileContext;
+use crate::context::{self, FileContext};
 use crate::issue::Issue;
 
 const RULE: &str = "slint/validation/no-hardcoded-string";
@@ -27,10 +27,7 @@ const ALLOWED_PROPS: &[&str] = &[
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     let _ = ctx; // no special context needed
 
-    for (idx, raw) in lines.iter().enumerate() {
-        let lineno = idx + 1;
-        if raw.trim_start().starts_with("//") { continue; }
-
+    for (lineno, raw, _) in context::code_lines(lines) {
         if let Some(cap) = HARDCODED_STR.captures(raw) {
             let prop = cap[1].to_lowercase();
             let value = &cap[2];

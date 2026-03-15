@@ -7,7 +7,7 @@
 use regex::Regex;
 use std::sync::LazyLock;
 
-use crate::context::FileContext;
+use crate::context::{self, FileContext};
 use crate::issue::Issue;
 
 const RULE_BASE: &str = "uiux/mother-child";
@@ -33,10 +33,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     if ctx.is_global_file { return; }
 
     // 1. Child has state (in-out property without <=>)
-    for (idx, raw) in lines.iter().enumerate() {
-        let lineno = idx + 1;
-        if raw.trim_start().starts_with("//") { continue; }
-
+    for (lineno, raw, _) in context::code_lines(lines) {
         if IN_OUT_PROP.is_match(raw) && !DELEGATION.is_match(raw) {
             issues.push(Issue::error(
                 ctx.path, lineno, 1,
@@ -51,8 +48,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
 
     // 2. Sibling import in views/
     if ctx.is_views_folder {
-        for (idx, raw) in lines.iter().enumerate() {
-            let lineno = idx + 1;
+        for (lineno, raw, _) in context::code_lines(lines) {
             if let Some(cap) = IMPORT.captures(raw) {
                 let import_path = &cap[1];
                 if STD_IMPORT.is_match(import_path) { continue; }

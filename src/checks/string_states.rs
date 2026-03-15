@@ -24,19 +24,13 @@ static SKIP_VALUES: LazyLock<Regex> = LazyLock::new(||
 pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
     if ctx.is_definition_file { return; }
 
-    for (idx, raw) in lines.iter().enumerate() {
-        let lineno = idx + 1;
-        if raw.trim_start().starts_with("//") { continue; }
-
-        let comment_at = context::comment_start(raw);
-        let segment = &raw[..comment_at];
-
+    for (lineno, _, segment) in context::code_lines(lines) {
         for cap in STR_COMPARE.captures_iter(segment) {
             let val = &cap[1];
             if SKIP_VALUES.is_match(val) { continue; }
 
             issues.push(Issue::error(
-                ctx.path, lineno, cap.get(0).unwrap().start() + 1, RULE,
+                ctx.path, lineno, cap.get(0).map_or(1, |m| m.start() + 1), RULE,
                 format!(
                     "stringly-typed state == \"{}\" \u{2014} all state values must be named constants defined in globals/ or moved to a Rust enum",
                     val

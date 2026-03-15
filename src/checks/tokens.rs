@@ -73,17 +73,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
         return;
     }
 
-    for (idx, raw) in lines.iter().enumerate() {
-        let lineno = idx + 1;
-        let stripped = raw.trim_start();
-
-        if stripped.starts_with("//") {
-            continue;
-        }
-
-        let comment_at = context::comment_start(raw);
-        let segment = &raw[..comment_at];
-
+    for (lineno, raw, segment) in context::code_lines(lines) {
         // Syntax exceptions
         if IMAGE_URL.is_match(segment) || TR_MACRO.is_match(segment) {
             continue;
@@ -145,7 +135,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
 
         // Floats (not already caught by px/duration/percent)
         for cap in FLOAT_VALUE.captures_iter(segment) {
-            let m = cap.get(1).unwrap();
+            let Some(m) = cap.get(1) else { continue };
             if is_covered(m.start(), m.end()) { continue; }
             if is_property_decl(raw, m.start()) { continue; }
             // Skip if preceded by # (hex)
@@ -160,7 +150,7 @@ pub fn check(ctx: &FileContext, lines: &[&str], issues: &mut Vec<Issue>) {
 
         // Integers (not already caught by other checks)
         for cap in INT_VALUE.captures_iter(segment) {
-            let m = cap.get(1).unwrap();
+            let Some(m) = cap.get(1) else { continue };
             if is_covered(m.start(), m.end()) { continue; }
             if is_property_decl(raw, m.start()) { continue; }
             if GRID_ROW_COL.is_match(raw) { continue; }

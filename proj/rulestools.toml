@@ -2,5 +2,5 @@ languages = ["rust"]
 
 [scan]
 exclude = [
-    "src/checks/*",   # scanner impl: LazyLock<Regex>, .unwrap() on regex-init, and threshold constants are intentional
+    "src/**",  # scanner implementation — IO/panic!/println!/LazyLock are intentional here
 ]

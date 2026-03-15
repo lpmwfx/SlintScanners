@@ -19,6 +19,23 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 use glob::Pattern;
 
+// ── Check dispatch ────────────────────────────────────────────────────────────
+
+type CheckFn = fn(&context::FileContext, &[&str], &mut Vec<Issue>);
+
+/// Per-file check registry — add one line here to register a new check.
+/// Each entry: (enabled predicate on Config, check function).
+const FILE_CHECKS: &[(fn(&Config) -> bool, CheckFn)] = &[
+    (|c| c.check_tokens,        checks::tokens::check),
+    (|c| c.check_strings,       checks::strings::check),
+    (|c| c.check_structure,     checks::structure::check),
+    (|c| c.check_events,        checks::events::check),
+    (|c| c.check_mother_child,  checks::mother_child::check),
+    (|c| c.check_string_states, checks::string_states::check),
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 /// Walk up from `start` to find a Cargo.toml containing `[workspace]`.
 /// Returns the workspace root if found, otherwise the original `start`.
 fn find_workspace_root(start: &Path) -> PathBuf {
@@ -51,6 +68,16 @@ fn matches_exclude_pattern(path: &Path, patterns: &[String]) -> bool {
     false
 }
 
+/// Emit issues as `cargo:warning=` lines and return the count.
+fn emit_issues(issues: &[Issue]) -> usize {
+    for issue in issues {
+        println!("cargo:warning={}", issue);
+    }
+    issues.len()
+}
+
+// ── Public API ────────────────────────────────────────────────────────────────
+
 /// Scan all `.slint` files and emit `cargo:warning` for each violation.
 /// Call this from `build.rs`.
 ///
@@ -67,7 +94,6 @@ pub fn scan_project() -> usize {
         return 0;
     }
 
-    // Collect all .slint file paths for tree-level checks
     let ui_dir = root.join("ui");
     let scan_dir = if ui_dir.is_dir() { ui_dir } else { root.join("src") };
 
@@ -81,22 +107,12 @@ pub fn scan_project() -> usize {
 
     let mut total_errors = 0;
 
-    // Per-file checks
     for path in &slint_files {
-        let issues = scan_file(path, &cfg);
-        for issue in &issues {
-            println!("cargo:warning={}", issue);
-            total_errors += 1;
-        }
+        total_errors += emit_issues(&scan_file(path, &cfg));
     }
 
-    // Tree-level checks
     if cfg.check_architecture {
-        let issues = checks::architecture::check_tree(&slint_files);
-        for issue in &issues {
-            println!("cargo:warning={}", issue);
-            total_errors += 1;
-        }
+        total_errors += emit_issues(&checks::architecture::check_tree(&slint_files));
     }
 
     if total_errors > 0 && cfg.deny {
@@ -118,26 +134,12 @@ pub fn scan_file(path: &Path, cfg: &Config) -> Vec<Issue> {
 
     let lines: Vec<&str> = content.lines().collect();
     let ctx = context::FileContext::new(path, &lines);
-
     let mut issues = Vec::new();
 
-    if cfg.check_tokens {
-        checks::tokens::check(&ctx, &lines, &mut issues);
-    }
-    if cfg.check_strings {
-        checks::strings::check(&ctx, &lines, &mut issues);
-    }
-    if cfg.check_structure {
-        checks::structure::check(&ctx, &lines, &mut issues);
-    }
-    if cfg.check_events {
-        checks::events::check(&ctx, &lines, &mut issues);
-    }
-    if cfg.check_mother_child {
-        checks::mother_child::check(&ctx, &lines, &mut issues);
-    }
-    if cfg.check_string_states {
-        checks::string_states::check(&ctx, &lines, &mut issues);
+    for (enabled, check) in FILE_CHECKS {
+        if enabled(cfg) {
+            check(&ctx, &lines, &mut issues);
+        }
     }
 
     issues
