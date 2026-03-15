@@ -16,8 +16,8 @@ pub use config::Config;
 pub use issue::Issue;
 
 use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
-use glob::Pattern;
+
+mod walker;
 
 // ── Check dispatch ────────────────────────────────────────────────────────────
 
@@ -35,38 +35,6 @@ const FILE_CHECKS: &[(fn(&Config) -> bool, CheckFn)] = &[
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-/// Walk up from `start` to find a Cargo.toml containing `[workspace]`.
-/// Returns the workspace root if found, otherwise the original `start`.
-fn find_workspace_root(start: &Path) -> PathBuf {
-    let mut dir = start.to_path_buf();
-    loop {
-        let cargo = dir.join("Cargo.toml");
-        if cargo.is_file() {
-            if let Ok(content) = std::fs::read_to_string(&cargo) {
-                if content.contains("[workspace]") {
-                    return dir;
-                }
-            }
-        }
-        if !dir.pop() {
-            break;
-        }
-    }
-    start.to_path_buf()
-}
-
-fn matches_exclude_pattern(path: &Path, patterns: &[String]) -> bool {
-    let path_str = path.to_string_lossy();
-    for pattern_str in patterns {
-        if let Ok(pattern) = Pattern::new(pattern_str) {
-            if pattern.matches(&path_str) {
-                return true;
-            }
-        }
-    }
-    false
-}
 
 /// Emit issues as `cargo:warning=` lines and return the count.
 fn emit_issues(issues: &[Issue]) -> usize {
@@ -87,23 +55,14 @@ pub fn scan_project() -> usize {
         .map(PathBuf::from)
         .unwrap_or_else(|_| std::env::current_dir().expect("no cwd"));
 
-    let root = find_workspace_root(&manifest_dir);
+    let root = walker::find_workspace_root(&manifest_dir);
 
     let cfg = Config::load(&root);
     if !cfg.enabled {
         return 0;
     }
 
-    let ui_dir = root.join("ui");
-    let scan_dir = if ui_dir.is_dir() { ui_dir } else { root.join("src") };
-
-    let slint_files: Vec<_> = WalkDir::new(&scan_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| !matches_exclude_pattern(e.path(), &cfg.exclude))
-        .filter(|e| e.path().extension().map_or(false, |ext| ext == "slint"))
-        .map(|e| e.path().to_path_buf())
-        .collect();
+    let slint_files = walker::collect_slint_files(&root, &manifest_dir, &cfg.topology, &cfg.exclude);
 
     let mut total_errors = 0;
 
@@ -134,15 +93,7 @@ pub fn scan_at(root: &Path) -> Vec<Issue> {
     if !cfg.enabled {
         return vec![];
     }
-    let ui_dir = root.join("ui");
-    let scan_dir = if ui_dir.is_dir() { ui_dir } else { root.join("src") };
-    let slint_files: Vec<_> = WalkDir::new(&scan_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| !matches_exclude_pattern(e.path(), &cfg.exclude))
-        .filter(|e| e.path().extension().map_or(false, |ext| ext == "slint"))
-        .map(|e| e.path().to_path_buf())
-        .collect();
+    let slint_files = walker::collect_slint_files(root, root, &cfg.topology, &cfg.exclude);
     let mut issues: Vec<Issue> = Vec::new();
     for path in &slint_files {
         issues.extend(scan_file(path, &cfg));

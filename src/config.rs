@@ -1,6 +1,24 @@
 use serde::Deserialize;
 use std::path::Path;
 
+/// Project topology — controls which files the scanner collects.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum Topology {
+    /// Single crate: scan own `ui/` or `src/` only. Default.
+    #[default]
+    Flat,
+    /// Workspace: scan all `apps/*/ui/` and `apps/*/src/` from workspace root.
+    Workspace,
+}
+
+const TOPOLOGY_WORKSPACE: &str = "workspace";
+
+impl Topology {
+    fn from_str(s: &str) -> Self {
+        if s.trim().to_lowercase() == TOPOLOGY_WORKSPACE { Self::Workspace } else { Self::Flat }
+    }
+}
+
 /// Scanner configuration — controls which checks are enabled and whether violations block the build.
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -14,6 +32,7 @@ pub struct Config {
     pub check_string_states: bool,
     pub check_architecture: bool,
     pub exclude: Vec<String>,
+    pub topology: Topology,
 }
 
 impl Default for Config {
@@ -29,6 +48,7 @@ impl Default for Config {
             check_string_states: true,
             check_architecture: true,
             exclude: Vec::new(),
+            topology: Topology::Flat,
         }
     }
 }
@@ -37,6 +57,13 @@ impl Default for Config {
 struct TomlRoot {
     #[serde(default)]
     slintscanners: Option<TomlScanners>,
+    #[serde(default)]
+    project: Option<TomlProject>,
+}
+
+#[derive(Deserialize, Default)]
+struct TomlProject {
+    topology: Option<String>,
 }
 
 #[derive(Deserialize, Default)]
@@ -72,6 +99,9 @@ impl Config {
                     if let Some(v) = s.string_states { cfg.check_string_states = v; }
                     if let Some(v) = s.architecture { cfg.check_architecture = v; }
                     if let Some(v) = s.exclude { cfg.exclude = v; }
+                }
+                if let Some(p) = parsed.project {
+                    if let Some(t) = p.topology { cfg.topology = Topology::from_str(&t); }
                 }
             }
         }
