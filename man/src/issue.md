@@ -21,3 +21,12 @@ Create an Error-severity issue at the given file location with rule ID and messa
 
 ---
 
+
+
+---
+
+<!-- LARS:START -->
+<a href="https://lpmathiasen.com">
+  <img src="https://carousel.lpmathiasen.com/carousel.svg?slot=1" alt="Lars P. Mathiasen"/>
+</a>
+<!-- LARS:END -->
