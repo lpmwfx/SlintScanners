@@ -93,3 +93,12 @@ Set `deny = true` to make violations fail the build.
 - [RustScanners](https://github.com/lpmwfx/RustScanners) — zero-literal scanner for Rust source files
 - [RulesTools](https://github.com/lpmwfx/RulesTools) — full multi-language scanner (Python, JS, CSS, Rust, Slint, C#, Kotlin)
 - [Rules](https://github.com/lpmwfx/Rules) — the coding rules these scanners enforce
+
+
+---
+
+<!-- LARS:START -->
+<a href="https://lpmathiasen.com">
+  <img src="https://carousel.lpmathiasen.com/carousel.svg?slot=1" alt="Lars P. Mathiasen"/>
+</a>
+<!-- LARS:END -->
